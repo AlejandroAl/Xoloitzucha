@@ -1,4 +1,6 @@
 # Byte-compiled / optimized / DLL files
+XoloitzIngDatos/layer_lambda/python/*
+XoloitzIngDatos/layer_lambda/python.zip
 __pycache__/
 *.py[cod]
 *$py.class
@@ -157,5 +159,7 @@ AgenteXoloitzSube/FolderAudiosPrueba
 ### Go Patch ###
 /vendor/
 /Godeps/
+
+
 
 # End of https://www.toptal.com/developers/gitignore/api/go

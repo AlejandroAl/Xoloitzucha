@@ -5,6 +5,9 @@ import (
 	"log"
 	"os"
 	"time"
+	"math/rand"
+	"math"
+	"strconv"
 	"strings"
 	"path/filepath"
 	"regexp"
@@ -30,6 +33,20 @@ func waitUntilFind(filename string) error {
 		break
 	}
 	return nil
+}
+
+func getid() string {
+	t := time.Now()
+	valueTime := t.Format(time.RFC3339)
+	splitFecha := strings.Split(valueTime,"T")
+	fecha := splitFecha[0]
+	horasplit := strings.Split(splitFecha[1],"-")
+	fechid := strings.Replace(fecha,"-","",-1)
+	horaMinSegid := strings.Replace(horasplit[0],":","",-1)
+	miliseg := strings.Replace(horasplit[1],":","",-1)
+	alnums := strconv.Itoa((int(math.Round(rand.Float64() * 100000))))
+
+	return "_"+fechid+"_"+horaMinSegid+"_"+miliseg+"_"+alnums
 }
 
 func main() {
@@ -87,7 +104,8 @@ func main() {
 						}
 						processedString := reg.ReplaceAllString(pathWithoutSpace, "")
 						log.Printf("Create: %s", event.Name )
-						log.Printf("S3 Name: %s", processedString )
+						processedString_id := strings.Replace(processedString,".wav",getid()+".wav",-1) 
+						log.Printf("S3 Name: %s", processedString_id )
 						
 
 						file, err := os.Open(event.Name)
@@ -104,7 +122,7 @@ func main() {
 							fmt.Println("Uploading file to S3...")
 							result, err := svc.Upload(&s3manager.UploadInput{
 								Bucket: aws.String(bucket),
-								Key:    aws.String(filepath.Base(processedString)),
+								Key:    aws.String(filepath.Base(processedString_id)),
 								ACL:                  aws.String("public-read-write"),
 								Body:   file,
 							})
