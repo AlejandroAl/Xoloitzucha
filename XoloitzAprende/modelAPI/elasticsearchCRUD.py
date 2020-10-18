@@ -16,9 +16,9 @@ class ElasticsearchManager():
 
     def __init__(self):    
         self.index_name = "xolo-data"
-        self.host = "search-elastic-xoloitzcucha-5v7rj5hvpmn3mffggwmswemgry.us-east-2.es.amazonaws.com"
-        self.user = "xoloitzcucha"
-        self.password = "X0l0itzcuch@"
+        self.host = ""
+        self.user = ""
+        self.password = ""
         self.client_es = Elasticsearch(["https://{}:{}@{}".format(self.user,self.password,self.host)],)
 
         
