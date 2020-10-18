@@ -40,7 +40,7 @@ dict_intencion = {'Reclamo (Queja)':["claim","reclaim","demand","complain","appe
 'Contratación':["contract","agreement","engagement"],
 'Duda/ Consulta':["doubt","query","misgiving","qualm","try","reject"],
 'Actualizar':["update","actualize","modernize"],
-'Solicitud':["request","apply","ask"," seek"," solicit","demand","create"],
+'Solicitud':["request","apply","ask"," seek"," solicit","demand","create","know"],
 'Aclaración':["clean","clean up","cleanse","wipe","clear"],
 'Cancelación':["cancel","write","call","undo","annul","scratch"],
 'Reportar':["report","dossier"],

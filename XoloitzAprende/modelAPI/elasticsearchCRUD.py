@@ -16,10 +16,23 @@ class ElasticsearchManager():
 
     def __init__(self):    
         self.index_name = "xolo-data"
-        self.host = ""
-        self.user = ""
-        self.password = ""
+        self.host = "search-elastic-xoloitzcucha-5v7rj5hvpmn3mffggwmswemgry.us-east-2.es.amazonaws.com"
+        self.user = "xoloitzcucha"
+        self.password = "X0l0itzcuch@"
         self.client_es = Elasticsearch(["https://{}:{}@{}".format(self.user,self.password,self.host)],)
+
+    def creacion_documento(client_es,index_name,identificador):
+        plantilla = {
+            "texto":None,
+            "fecha_inicio":None,
+            "fecha_actualizacion":None,
+            "estatus": None,
+            "mensajesError":None
+        }
+        plantilla['fecha_inicio']=datetime.now()
+        plantilla['estatus']=os.environ['ESTATUS_00']
+        client_es.index(index=index_name, id=identificador, body=plantilla)
+        return client_es.get(index=index_name, id=identificador)
 
         
     def obtenDocumento(self,identificador):
@@ -29,7 +42,7 @@ class ElasticsearchManager():
         if self.client_es.exists(index=self.index_name,id=identificador):
             self.documento = self.client_es.get(index=self.index_name,id=identificador)
         else:
-            selfdocumento = creacion_documento(self.client_es,self.index_name,identificador)
+            selfdocumento = self.creacion_documento(self.client_es,self.index_name,identificador)
 
         return self.documento
 
@@ -37,6 +50,7 @@ class ElasticsearchManager():
     def actualizaDocumento(self,status):
         self.documento['_source']['fecha_actualizacion'] = datetime.now()
         self.documento['_source']['estatus'] = self.obtenerEstatusPorId(status)
+        self.documento['_source']["mensajesError"] = ""
         self.client_es.index(index=self.index_name, id=self.identificador, body=self.documento['_source'])
         return self.documento
 
@@ -54,6 +68,10 @@ class ElasticsearchManager():
         }
 
         return dictEstatus[id]
+
+    def addModelResults(self,dictModel):
+         for element in dictModel:
+            self.documento['_source'][element] = dictModel[element]
 
 
     def agregaProductos(self):
