@@ -40,13 +40,13 @@ dict_intencion = {'Reclamo (Queja)':["claim","reclaim","demand","complain","appe
 'Contratación':["contract","agreement","engagement"],
 'Duda/ Consulta':["doubt","query","misgiving","qualm","try","reject"],
 'Actualizar':["update","actualize","modernize"],
-'Solicitud':["request","apply","ask"," seek"," solicit","demand","create","know"],
-'Aclaración':["clean","clean up","cleanse","wipe","clear"],
+'Solicitud':["request","apply","ask"," seek"," solicit","demand","create"],
+'Aclaración':["clean","clean","cleanse","wipe","clear"],
 'Cancelación':["cancel","write","call","undo","annul","scratch"],
 'Reportar':["report","dossier"],
-'Bloqueo':["block"," lock"," blockade"," stop"," obstruct","secure"],
-'Localizar tarjeta':["locate"," localize"," trace"," track down"," nail","get on to"],
-'Asesoría':["advise","moderate","help","support","provide","information"]}
+'Bloqueo':["block"," lock","blockade","stop","obstruct","secure","cant"],
+'Localizar tarjeta':["locate","localize","trace","track"," nail","get"],
+'Asesoría':["advise","moderate","help","support","provide","information","know"]}
 dict_producto = {'credit card':'Tarjeta de crédito','debit account':'Cuenta de débito','investment':'Inversión','debit card':"Cuenta de débito",
                  'checks':'Cheques','insurance':'Seguros','branch offices':'Sucursales',"cash":"Efecto ",
                  'credits':'Créditos',"application":"Canales digitales",'immediate cash':'Efectivo inmediato',
@@ -70,6 +70,7 @@ def limpieza_oracion(oracion):
     oracion = ' '.join([wordnet_lemmatizer.lemmatize(x[0],"v") if x[1].startswith("V") else wordnet_lemmatizer.lemmatize(x[0]) for x in oracion_tag])
     oracion = ' '.join([x for x in oracion.split(' ') if x not in stopwords])
     return oracion
+    
 def modelo(texto_nuevo):
     #Tratamiento de texto
     ls_oraciones_nuevo = [limpieza_oracion(x) for x in texto_nuevo.split('.')]
@@ -84,25 +85,25 @@ def modelo(texto_nuevo):
     #Elegir oración y su respectiva etiqueta 
     ls_answer          = [x for x in df_oracion_nuevo.groupby(["motivo_predicted"]).count().sort_values(by="oracion",ascending=False).index if x!="Desconocido intencion"]
     if len(ls_answer)>0:
-        df_motivo      = df_oracion_nuevo[df_oracion_nuevo["motivo_predicted"]==ls_answer[0]].head(1).copy().reset_index(drop=True)
+        df_motivo      = df_oracion_nuevo[df_oracion_nuevo["motivo_predicted"]==ls_answer[0]].head(1).copy().reset_index(drop=True)[[x for x in df_oracion_nuevo.columns if x!="producto_predicted"]]
     else:
-        df_motivo      = df_oracion_nuevo[df_oracion_nuevo["motivo_predicted"]=="Desconocido intencion"].head(1).copy().reset_index(drop=True)
+        df_motivo      = df_oracion_nuevo[df_oracion_nuevo["motivo_predicted"]=="Desconocido intencion"].head(1).copy().reset_index(drop=True)[[x for x in df_oracion_nuevo.columns if x!="producto_predicted"]]
     df_motivo["topword"] = topword
-
+    
     #Guardar resultados modelo producto
     df_oracion_nuevo[["producto_predicted"]],df_oracion_nuevo[clf_producto.classes_.tolist()] = clf_producto.predict(tfidf),clf_producto.predict_proba(tfidf)
     #Elegir oración y su respectiva etiqueta 
     ls_answer          = [x for x in df_oracion_nuevo.groupby(["producto_predicted"]).count().sort_values(by="oracion",ascending=False).index if x!="Desconocido producto"]
     if len(ls_answer)>0:
-        df_producto    = df_oracion_nuevo[df_oracion_nuevo["producto_predicted"]==ls_answer[0]].head(1).copy().reset_index(drop=True)
+        df_producto    = df_oracion_nuevo[df_oracion_nuevo["producto_predicted"]==ls_answer[0]].head(1).copy().reset_index(drop=True)[[x for x in df_oracion_nuevo.columns if x!="motivo_predicted"]]
     else:
-        df_producto    = df_oracion_nuevo[df_oracion_nuevo["producto_predicted"]=="Desconocido producto"].head(1).copy().reset_index(drop=True)
-    
+        df_producto    = df_oracion_nuevo[df_oracion_nuevo["producto_predicted"]=="Desconocido producto"].head(1).copy().reset_index(drop=True)[[x for x in df_oracion_nuevo.columns if x!="motivo_predicted"]]
     df_respuesta       = pd.concat([df_motivo,df_producto],axis=1)
     for columna in set(clf.classes_.tolist()+clf_producto.classes_.tolist()):
         df_respuesta[columna] = df_respuesta[columna]*100
     df_respuesta.rename(columns={"motivo_predicted":"intencion","producto_predicted":"producto"},inplace=True)
     df_respuesta.drop(columns=["oracion"],inplace=True)
+    
     return df_respuesta.to_dict(orient="records")[0]
 
 
