@@ -1,6 +1,7 @@
 {
     "_id":"Identificador unico para cada llamada, permitirá tener la trazabilidad de incio a fin",
     "texto":"Texto obtenido del video",
+    "texto_ingles":"Texto traducido a idioma ingles",
     "fecha_inicio":"Cuando se inicia el proceso de Xoloitzcucha",
     "fecha_actualizacion":"Refleja la fecha de los utlimos cambios",
     "probabilidad_motivo_x":"Porcentaje de ser un notivo x",
@@ -11,7 +12,7 @@
     "tipo_movimiento":"Indica la probabilidad de ser un tipo de movimiento x basado en la probabilidad mas alta",
     "probabilidad_contexto1_x":"Indica la probabilidad de ser un contexto X n",
     "contexto_x":"Indica el contexto basado en la probabilidad mas alta",
-    "estatus":"AudioATexto|LimpiezaTexto|ClasificandoTexto|Completado|Error",
+        "estatus":"AudioATexto_Inicio|AudioATexto_Termino|TextoTraducido|ClasificandoTexto|Completado|Error",
     "mensajesError":"ex. [Limpiezatexto] Eror al pasear json",
     "top_palabras_frecuentes":"Indica las 3 palabras mas utilizadas en la llamada"
 }
