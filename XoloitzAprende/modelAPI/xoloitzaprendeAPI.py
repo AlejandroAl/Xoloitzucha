@@ -24,11 +24,12 @@ def xoloitzaprende():
     documento =  elasticManager.actualizaDocumento("ESTATUS_04")
     texto = documento["_source"]["texto_ingles"]
 
-    dictModel = modelo(texto)
-    
-    elasticManager.addModelResults(dictModel)
-
-    documento = elasticManager.getDocument()
+    try: 
+        dictModel = modelo(texto)
+        elasticManager.addModelResults(dictModel)
+        documento =  elasticManager.actualizaDocumento("ESTATUS_05")
+    except:
+        documento =  elasticManager.actualizaDocumento("ESTATUS_EROR")
 
     # if random.randrange(2) == 0:
     #     elasticManager.agregaProductos()
