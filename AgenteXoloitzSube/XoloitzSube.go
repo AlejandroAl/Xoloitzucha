@@ -51,7 +51,7 @@ func getid() string {
 
 func main() {
 	
-	myFigure := figure.NewFigure("Welcome to XoloitzSube", "", true)
+	myFigure := figure.NewFigure("Welcome to XoloitzSube 0.0", "", true)
   	myFigure.Print()
 
 	if len(os.Args) != 4 {
